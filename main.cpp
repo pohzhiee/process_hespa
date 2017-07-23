@@ -20,16 +20,13 @@ string join4(string part1, string part2, string part3, string part4){
     return part1;
 }
 
-string prepath = "../anim_data/";
 
-void mkdir(){
+void mkdir(string anim_data_path){
     string dirarr[10] = {"Coords_p","Coords_e","Ux_element","Uy_element","Ux_particle","Uy_particle","Sxx","Syy","Sxy","Phase_field"};
 
 
     for (int i=0;i<10;i++) {
-        string path_str = prepath;
-        path_str.append(dirarr[i]);
-        const char* path = join2(prepath,dirarr[i]).c_str();
+        const char* path = join2(anim_data_path,dirarr[i]).c_str();
         boost::filesystem::path dir(path);
         if(boost::filesystem::create_directories(dir))
         {
@@ -39,7 +36,7 @@ void mkdir(){
 
 }
 
-void loadp(string file_num_str){
+void loadp(string file_num_str, string anim_path, string anim_data_path){
     //variable declarations
     string word;
     long int num=0;
@@ -47,16 +44,16 @@ void loadp(string file_num_str){
     string wordToFind[]= {"POINTS","Ux","Uy","Sxx","Syy","Sxy"};
 
     //open input file
-    ifstream inpfile(join3("../Animation/Particles",file_num_str,".vtk"));
+    ifstream inpfile(join4(anim_path,"Particles",file_num_str,".vtk"));
 
     if (inpfile.is_open()){
         //open output files
-        ofstream coordf(join4(prepath,"Coords_p/coords_particle",file_num_str,".txt"));
-        ofstream ux(join4(prepath,"Ux_particle/Ux",file_num_str,".txt"));
-        ofstream uy(join4(prepath,"Uy_particle/Uy",file_num_str,".txt"));
-        ofstream sxxf(join4(prepath,"Sxx/Sxx",file_num_str,".txt"));
-        ofstream syyf(join4(prepath,"Syy/Syy",file_num_str,".txt"));
-        ofstream sxyf(join4(prepath,"Sxy/Sxy",file_num_str,".txt"));
+        ofstream coordf(join4(anim_data_path,"Coords_p/coords_particle",file_num_str,".txt"));
+        ofstream ux(join4(anim_data_path,"Ux_particle/Ux",file_num_str,".txt"));
+        ofstream uy(join4(anim_data_path,"Uy_particle/Uy",file_num_str,".txt"));
+        ofstream sxxf(join4(anim_data_path,"Sxx/Sxx",file_num_str,".txt"));
+        ofstream syyf(join4(anim_data_path,"Syy/Syy",file_num_str,".txt"));
+        ofstream sxyf(join4(anim_data_path,"Sxy/Sxy",file_num_str,".txt"));
         while ( inpfile.good() )	{
             inpfile >> word;
 
@@ -125,7 +122,7 @@ void loadp(string file_num_str){
     }
 }
 
-void loade(string file_num_str){
+void loade(string file_num_str, string anim_path, string anim_data_path){
     string word;
     long int num=0;
     //variable declarations
@@ -133,14 +130,14 @@ void loade(string file_num_str){
     string wordToFind[]= {"POINTS","Ux","Uy","Phase_Field"};
 
     //open input file
-    ifstream inpfile(join3("../Animation/Elements",file_num_str,".vtk"));
+    ifstream inpfile(join4(anim_path,"Elements",file_num_str,".vtk"));
 
     if (inpfile.is_open()){
         //open output files
-        ofstream coordf(join4(prepath,"Coords_e/coords_element",file_num_str,".txt"));
-        ofstream ux(join4(prepath,"Ux_element/Ux",file_num_str,".txt"));
-        ofstream uy(join4(prepath,"Uy_element/Uy",file_num_str,".txt"));
-        ofstream phase(join4(prepath,"Phase_field/Phase_field",file_num_str,".txt"));
+        ofstream coordf(join4(anim_data_path,"Coords_e/coords_element",file_num_str,".txt"));
+        ofstream ux(join4(anim_data_path,"Ux_element/Ux",file_num_str,".txt"));
+        ofstream uy(join4(anim_data_path,"Uy_element/Uy",file_num_str,".txt"));
+        ofstream phase(join4(anim_data_path,"Phase_field/Phase_field",file_num_str,".txt"));
         while ( inpfile.good() )	{
             inpfile >> word;
 
@@ -194,31 +191,23 @@ void loade(string file_num_str){
 int main(int argc, char** argv){
     clock_t start;
     start = clock();
-    mkdir();
-    if(argc > 1){
+    if(argc > 3){
+        string anim_path_inp = argv[1];
+        string anim_data_path_inp = argv[2];
+        mkdir(anim_data_path_inp);
 #pragma omp parallel num_threads(4)
         {
 #pragma omp for
-            for(int i=1;i<argc;i++){
-                loadp(argv[i]);
-                loade(argv[i]);
+            for(int i=3;i<argc;i++){
+                loadp(argv[i],anim_path_inp,anim_data_path_inp);
+                loade(argv[i],anim_path_inp,anim_data_path_inp);
             }
         }
     }
-
-
-
-    /*
-    #pragma omp parallel num_threads(8)
-    {
-        #pragma omp for
-        for(int i=1;i<=100;i++){
-            string file_num_str =to_string(i*10);
-            loadp(file_num_str);
-
-        }
+    else {
+        std::cout << "Not enough input parameters. Usage example:" << std::endl;
+        std::cout << "process_hespa.exe <anim_path> <anim_data_path> <file_num1>";
     }
-    */
     cout << endl << "Time elapsed: " << (clock()-start)/(CLOCKS_PER_SEC/1000) << "ms";
     return 0;
 
