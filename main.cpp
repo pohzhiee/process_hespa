@@ -69,7 +69,7 @@ void loadp(string file_num_str){
                     coordf << out1 << '\t' << out2 << endl;
                 }
             }
-            if (inpfile.good() && word.compare(wordToFind[1]) == 0) { //when it manage to find the "Sxx"
+            if (inpfile.good() && word.compare(wordToFind[1]) == 0) { //when it manage to find the "Ux"
                 inpfile >> out_dummy >> out_dummy >> out_dummy;
                 for (int i=0;i<num;i++){
                     inpfile >> out1;
@@ -77,7 +77,7 @@ void loadp(string file_num_str){
                 }
             }
 
-            if (inpfile.good() && word.compare(wordToFind[2]) == 0) { //when it manage to find the "Syy"
+            if (inpfile.good() && word.compare(wordToFind[2]) == 0) { //when it manage to find the "Uy"
                 inpfile >> out_dummy >> out_dummy >> out_dummy;
                 for (int i=0;i<num;i++){
                     inpfile >> out1;
@@ -85,7 +85,7 @@ void loadp(string file_num_str){
                 }
             }
 
-            if (inpfile.good() && word.compare(wordToFind[3]) == 0) { //when it manage to find the "Sxy"
+            if (inpfile.good() && word.compare(wordToFind[3]) == 0) { //when it manage to find the "Sxx"
                 inpfile >> out_dummy >> out_dummy >> out_dummy;
                 for (int i=0;i<num;i++){
                     inpfile >> out1;
@@ -93,7 +93,7 @@ void loadp(string file_num_str){
                 }
             }
 
-            if (inpfile.good() && word.compare(wordToFind[4]) == 0) { //when it manage to find the "Sxy"
+            if (inpfile.good() && word.compare(wordToFind[4]) == 0) { //when it manage to find the "Syy"
                 inpfile >> out_dummy >> out_dummy >> out_dummy;
                 for (int i=0;i<num;i++){
                     inpfile >> out1;
