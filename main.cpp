@@ -26,7 +26,8 @@ void mkdir(string anim_data_path){
 
 
     for (int i=0;i<10;i++) {
-        const char* path = join2(anim_data_path,dirarr[i]).c_str();
+		string path_str = join2(anim_data_path,dirarr[i]);
+        const char* path = path_str.c_str();
         boost::filesystem::path dir(path);
         if(boost::filesystem::create_directories(dir))
         {
@@ -45,7 +46,6 @@ void loadp(string file_num_str, string anim_path, string anim_data_path){
 
     //open input file
     ifstream inpfile(join4(anim_path,"Particles",file_num_str,".vtk"));
-
     if (inpfile.is_open()){
         //open output files
         ofstream coordf(join4(anim_data_path,"Coords_p/coords_particle",file_num_str,".txt"));
@@ -192,8 +192,8 @@ int main(int argc, char** argv){
     clock_t start;
     start = clock();
     if(argc > 3){
-        string anim_path_inp = argv[1];
-        string anim_data_path_inp = argv[2];
+        string anim_path_inp(argv[1]);
+        string anim_data_path_inp(argv[2]);
         mkdir(anim_data_path_inp);
 #pragma omp parallel num_threads(4)
         {
@@ -205,8 +205,8 @@ int main(int argc, char** argv){
         }
     }
     else {
-        std::cout << "Not enough input parameters. Usage example:" << std::endl;
-        std::cout << "process_hespa.exe <anim_path> <anim_data_path> <file_num1>";
+        cout << "Not enough input parameters. Usage example:" << endl;
+        cout << "process_hespa.exe <anim_path> <anim_data_path> <file_num1>";
     }
     cout << endl << "Time elapsed: " << (clock()-start)/(CLOCKS_PER_SEC/1000) << "ms";
     return 0;
